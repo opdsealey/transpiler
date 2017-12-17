@@ -15,7 +15,7 @@ optional arguments:
                         changes
   -v-, --version        show program's version number and exit
 
-Usage: python transpile.py -f README.md -c pandoc README.md > /tmp/README.html
+Usage: python transpile.py -f README.md -c "pandoc README.md > /tmp/README.html"
 ```
 
 
