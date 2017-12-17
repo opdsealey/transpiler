@@ -8,35 +8,36 @@ from _version import __version__
 def execute_cmd(cmd):
     """
     :param cmd: String
-    :return: Boolean
+    :return: Boolean or String
 
     Executes a bash command passed to it in a shell, returns the result of the command or false if errored
     """
     process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     if stderr:
-        return False
+        sys.exit(2)
     return stdout
 
 
-
-def check_change(file, time):
+def check_change(file, time=0.0):
     """
+    :param file: Filepath String
+    :param time: Float
+    :return: Float or False
 
-    :param file: String
-    :param time: Time Object
-    :return: Boolean
-
-    Returns true if an the file mtime has changed
+    Returns new mtime if an the file mtime has changed
     """
+    if not os.path.isfile(file):
+        sys.exit(1)
 
+    mtime = os.path.getmtime(file)
+    if  mtime > time:
+       return mtime
     return False
-
 
 
 def parse_args(args):
     """
-
     :param args: a list of command line arguments
     :return: populated namespace
 
@@ -51,8 +52,22 @@ def parse_args(args):
     parser.add_argument('-v-', '--version', action='version', version='%(prog)s {version}'.format(version=__version__))
     return parser.parse_args(args)
 
-if __name__ == '__main__':
-    args = ['--version']
 
-    a = parse_args(args)
-    pass
+def main_loop(file, cmd):
+    """
+    :param args:
+    :return: None
+    """
+    time = 0.0
+    try:
+        while True:
+            n_time = check_change(file, time)
+            if n_time:
+                execute_cmd(cmd)
+                time = n_time
+    except KeyboardInterrupt:
+        sys.exit(3)
+
+if __name__ == '__main__':
+    args = parse_args(sys.argv[1:])
+    main_loop(args.file, args.command)
