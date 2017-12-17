@@ -45,7 +45,7 @@ def parse_args(args):
     """
     parser = argparse.ArgumentParser(
         description='A simple python transpiler to run a command whenver a file changes',
-        epilog='Usage: python transpile.py -f README.md -c pandoc README.md > /tmp/README.html'
+        epilog='Usage: python transpile.py -f README.md -c \"pandoc README.md > /tmp/README.html\"'
     )
     parser.add_argument('-f', '--file', action='store', required=True, help='The file path toe hte file to be watched for changes (changes means change in mtime')
     parser.add_argument('-c', '--command', action='store', required=True, help='The command to be run whenever the watched file changes')
